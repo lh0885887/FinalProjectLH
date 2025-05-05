@@ -8,6 +8,8 @@
 import Foundation
 import SwiftUI
 
+// TODO: Figure out where to put this
+//@Binding var pokemonName: String
 
 struct Pokemon: Decodable {
     let id: Int
@@ -25,4 +27,3 @@ func fetchPokemonFromAPI() async throws -> Pokemon {
     
     return decoded
 }
-

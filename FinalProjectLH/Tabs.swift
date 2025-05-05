@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct Tabs: View {
-//    @State var selectedPokemon: Pokemon
+    @State var pokemonName: String = ""
     @State private var pokemon: Pokemon?
     @State private var error: String?
     var body: some View {
@@ -16,7 +16,19 @@ struct Tabs: View {
             Tab("Home", systemImage: "house")
             {
                 Text("Enter the name of a Pokemon to view it's information:")
+                TextField("Enter Pokemon Name", text: $pokemonName).padding(20)
+
+//              Shows warning message only after typing in TextField
+                if (pokemonName != "") {
+                    Text("Make sure '\(pokemonName)' is spelled correctly or the program will not work!")
+                }
             }
+            
+            
+            
+            
+            
+            
             Tab("Pokemon", systemImage: "gamecontroller.circle")
             {
                     VStack {
@@ -41,7 +53,6 @@ struct Tabs: View {
                 }
             }
         }
-        
     }
 
 #Preview {
