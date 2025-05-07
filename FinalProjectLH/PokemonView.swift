@@ -42,8 +42,11 @@ struct PokemonView: View {
         .task {
             
 //          clear out currently stored data before each new fetch
-            pokemon = nil
-            error = nil
+//            pokemon = nil
+//            error = nil
+            
+            print("Starting fetch for: \(pokemonName)")
+
             
             do {
                 pokemon = try await fetchPokemonFromAPI(named: pokemonName)
