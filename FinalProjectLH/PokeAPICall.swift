@@ -17,22 +17,23 @@ struct Pokemon: Decodable {
 }
 
 func fetchPokemonFromAPI(named name: String) async throws -> Pokemon {
-    let cleanedName = name.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-    guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon/\(cleanedName)/") else {
+    let lowercaseName = name.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+    
+    guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon/\(lowercaseName)/") else {
         throw URLError(.badURL)
     }
-    print("Fetching from: \(url)") // Add this line to debug the URL
     
+    print("Fetching Pokemon data for: \(lowercaseName)")
+    print("Fetching data from \(url.absoluteString)")
+    
+
     let (data, response) = try await URLSession.shared.data(from: url)
 
-    if let httpResponse = response as? HTTPURLResponse {
-        print("Response status code: \(httpResponse.statusCode)") // Add this to log status code
-        if httpResponse.statusCode != 200 {
-            throw URLError(.badServerResponse)
-        }
+    guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+        throw URLError(.badServerResponse)
     }
-    
-    let decoded = try JSONDecoder().decode(Pokemon.self, from: data)
-    return decoded
+
+    return try JSONDecoder().decode(Pokemon.self, from: data)
 }
+
 

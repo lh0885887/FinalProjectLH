@@ -2,7 +2,7 @@
 //  Tabs.swift
 //  FinalProjectLH
 //
-//  Created by HILL, LOGAN on 5/5/25.
+//  Created by HILL, LOGAN on 5/5/25
 //
 
 import SwiftUI
