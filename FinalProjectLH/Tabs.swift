@@ -9,51 +9,89 @@ import SwiftUI
 
 struct Tabs: View {
     @State var pokemonName: String = ""
+    @State private var selectedTab = 0  // 0 = Home, 1 = Pokemon
     @State private var pokemon: Pokemon?
     @State private var error: String?
+    @State private var favorites: [String] = [] // Array to store favorites
+    
     var body: some View {
-        TabView {
-            Tab("Home", systemImage: "house")
-            {
-                Text("Enter the name of a Pokemon to view it's information:")
-                TextField("Enter Pokemon Name", text: $pokemonName).padding(20)
-
-//              Shows warning message only after typing in TextField
-                if (pokemonName != "") {
+        TabView(selection: $selectedTab) {
+            
+            // Home Tab
+            VStack {
+                Image("pokeBall")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 150, height: 150)
+                
+                Text("Welcome to the PokeAPI Search Application!")
+                    .font(.title)
+                    .fontWeight(.semibold)
+                    .multilineTextAlignment(.center)
+                    .padding(.top, 20)
+                    .foregroundColor(.red)
+                
+                Text("Enter the name of a Pokemon to view its information:")
+                    .padding()
+                    .font(.headline)
+                TextField("Enter Pokemon Name", text: $pokemonName)
+                    .textFieldStyle(.roundedBorder)
+                    .padding(.bottom, 20)
+                    .padding()
+                
+                if !pokemonName.isEmpty {
                     Text("Make sure '\(pokemonName)' is spelled correctly or the program will not work!")
+                        .font(.footnote)
+                        .foregroundColor(.gray)
+                        .padding(.bottom)
+                        .padding(30)
                 }
+                
+                Button("Search for Pokemon") {
+                    selectedTab = 1  // Switch to Pokemon tab
+                }
+                .padding()
+                .background(Color.red)
+                .foregroundColor(.white)
+                .cornerRadius(10)
+                
+            }
+            .tag(0) // for $selectedTab
+            .tabItem {
+                Label("Home", systemImage: "house")
             }
             
             
             
+            // Pokemon Tab
+            PokemonView(pokemonName: $pokemonName, favorites: $favorites)
+            .tag(1)
+            .tabItem {
+                Label("Pokemon", systemImage: "gamecontroller.circle")
+            }
             
             
             
-            Tab("Pokemon", systemImage: "gamecontroller.circle")
-            {
-                    VStack {
-                        if let pokemon = pokemon {
-                            Text("Name: \(pokemon.name.capitalized)")
-                            Text("ID: \(pokemon.id)")
-                            Text("Height: \(pokemon.height)'")
-                            Text("Weight: \(pokemon.weight) lbs")
-                        } else if let error = error {
-                            Text("Error: \(error)")
-                        } else {
-                            Text("Loading...")
-                        }
-                    }
-                    .task {
-                        do {
-                            pokemon = try await fetchPokemonFromAPI()
-                        } catch {
-                            self.error = error.localizedDescription
-                        }
+            // Favorites Tab
+            VStack {
+                if favorites.isEmpty {
+                    Text("No favorites yet. Start by adding one!")
+                        .italic()
+                        .padding()
+                } else {
+                    List(favorites, id: \.self) { favorite in
+                        Text(favorite)
                     }
                 }
+            }
+            .tag(2)
+            .tabItem {
+                Label("Favorites", systemImage: "star.fill")
             }
         }
     }
+}
+
 
 #Preview {
     Tabs()
